@@ -1,0 +1,20 @@
+﻿@model VendorViewModel
+
+<form asp-controller="Invoice" asp-action="InvoiceLineItemAdd" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="form-group">
+        <label asp-for="InvoiceLineItem.Description" :></label>
+        <input type="text" asp-for="InvoiceLineItem.Description" class="form-control invoiceBorder" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="InvoiceLineItem.Amount">Amount : </label>
+        <input type="number" asp-for="InvoiceLineItem.Amount" class=" form-control invoiceBorder" />
+    </div>
+
+    <input type="hidden" asp-for="InvoiceLineItem.InvoiceId" value="@Model.Invoices" />
+
+    <br />
+    <button type="submit" class="btn btn-primary">Add line item</button>
+</form>
+
+<partial name="InvoiceLineItemAdd" />

@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Vendors List";
+}
+@if (TempData["VendorDeleted"] != null)
+{
+    <p id="MessageUndo">
+        The vendor "@TempData["VendorDeleted"]" was deleted.
+        <a asp-controller="Vendors" asp-action="VendorUndo" asp-route-id="@TempData["DeletedID"]">Undo</a> this deleted.
+    </p>
+}
+<p><a asp-controller="Vendors" asp-action="AddVendors">Add new vendor</a></p>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var list in Model)
+        {
+            @foreach (var vendor in list)
+            {
+                @if (!vendor.IsDeleted)
+                {
+                    <tr>
+                        <td>@vendor.Name</td>
+                        <td>@vendor.Address1 @vendor.City</td>
+                        <td>
+                            <a asp-controller="Invoice" asp-action="InvoiceVendors" asp-route-vendorId="@vendor.VendorId">Invoices</a>
+                            <span class="mx-1">|</span>
+                            <a asp-controller="Vendors" asp-action="EditVendors" asp-route-id="@vendor.VendorId">Edit</a>
+                            <span class="mx-1">|</span>
+                            <a asp-controller="Vendors" asp-action="SoftDeleteVendor" asp-route-id="@vendor.VendorId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            }
+        }
+
+    </tbody>
+</table>
+
+<div>
+    <a asp-controller="Vendors" asp-action="Vendor" asp-route-alphabeticalGroupFilter="A B C D E"
+       class="btn btn-outline-secondary">A - E</a>
+    <a asp-controller="Vendors" asp-action="Vendor" asp-route-alphabeticalGroupFilter="F G H I J K"
+       class="btn btn-outline-secondary">F - K</a>
+    <a asp-controller="Vendors" asp-action="Vendor" asp-route-alphabeticalGroupFilter="L M N O P Q R"
+       class="btn btn-outline-secondary">L - R</a>
+    <a asp-controller="Vendors" asp-action="Vendor" asp-route-alphabeticalGroupFilter="S T U V W X Y Z"
+       class="btn btn-outline-secondary">S - Z</a>
+</div>

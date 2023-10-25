@@ -1,0 +1,159 @@
+﻿@model VendorViewModel;
+
+@{
+    ViewData["Title"] = "Vendors Invoice";
+}
+
+<div class="invoiceSurroundBorder">
+    <div class="float-left">
+        <div class="float-right">
+        <div class="rightTopAlphabeticalGroup">
+            @{
+                string firstFilterCharacter = (Model.CurrentVendor.Name).Substring(0, 1);
+                string alphabeticalFilter = "";
+                string showAlphabeticalRange = "";
+            }
+            @if (firstFilterCharacter == "A" || firstFilterCharacter == "B" || firstFilterCharacter == "C" || firstFilterCharacter == "D" || firstFilterCharacter == "E")
+            {
+                alphabeticalFilter = "A B C D E";
+                showAlphabeticalRange = "A - E";
+            }
+            @if (firstFilterCharacter == "F" || firstFilterCharacter == "G" || firstFilterCharacter == "H" || firstFilterCharacter == "I" || firstFilterCharacter == "J" || firstFilterCharacter == "K")
+            {
+                alphabeticalFilter = "F G H I J K";
+                showAlphabeticalRange = "F - K";
+            }
+            @if (firstFilterCharacter == "L" || firstFilterCharacter == "M" || firstFilterCharacter == "N" || firstFilterCharacter == "O" || firstFilterCharacter == "P" || firstFilterCharacter == "Q" || firstFilterCharacter == "R")
+            {
+                alphabeticalFilter = "L M N O P Q R";
+                showAlphabeticalRange = "L - R";
+            }
+            @if (firstFilterCharacter == "S" || firstFilterCharacter == "T" || firstFilterCharacter == "U" || firstFilterCharacter == "V" || firstFilterCharacter == "W" || firstFilterCharacter == "X" || firstFilterCharacter == "Y" || firstFilterCharacter == "Z")
+            {
+                alphabeticalFilter = "S T U V W X Y Z";
+                showAlphabeticalRange = "S - Z";
+            }
+            <h6 class="blueOut"> <a asp-controller="Vendors" asp-action="Vendor" asp-route-alphabeticalGroupFilter="@alphabeticalFilter">Return to @showAlphabeticalRange Vendors</a></h6>
+
+        </div>
+
+        <h3>Invoces for @Model.CurrentVendor.Name </h3>
+        <br />
+        <h5 class="GrayedOut">Address : @Model.CurrentVendor.Address1 @Model.CurrentVendor.Address2 @Model.CurrentVendor.City </h5>
+
+        <br />
+        <br />
+        <h6><b>Invoices</b></h6>
+        <table class="table table-bordered table-striped invoiceBorder">
+            <thead>
+                <tr>
+                    <th>Invoice #</th>
+                    <th>Due date</th>
+                    <th>Amount paid</th>
+                </tr>
+            </thead>
+
+            @foreach (var invoice in Model.Invoices)
+            {
+                <tr>
+                    <td><a asp-controller="Invoice" asp-action="InvoiceVendors" asp-route-vendorId="@invoice.VendorId" asp-route-invoiceId="@invoice.InvoiceId" asp-route-PaymentTermsId="@invoice.PaymentTermsId">@invoice.InvoiceId</a></td>
+                    <td>@invoice.InvoiceDueDate.Value.ToShortDateString()</td>
+
+                    <td>@invoice.PaymentTotal</td>
+                </tr>
+            }
+        </table>
+        <form asp-controller="Invoice" asp-action="InvoiceAdd" asp-route-vendorId="@Model.CurrentVendor.VendorId" method="post" enctype="application/x-www-form-urlencoded">
+            <div class="form-group">
+                <label asp-for="Invoice.InvoiceDate"><b>Date:</b></label>
+                <input type="date" asp-for="Invoice.InvoiceDate" class="form-control invoiceBorder" />
+            </div>
+
+            <div class="form-group invoiceBorder">
+                <label asp-for="Invoice.PaymentTermsId"><b>Terms:</b></label>
+                <select asp-for="Invoice.PaymentTermsId" class="form-select">
+                    @foreach (var paymentTerm in Model.AllPaymentTerms)
+                    {
+                        <option value="@paymentTerm.PaymentTermsId" class="form-control invoiceBorder">@paymentTerm.Description</option>
+                    }
+                </select>
+            </div>
+            <input type="hidden" asp-for="Invoice.VendorId" value="@Model.CurrentVendor.VendorId" />
+            <br />
+            <button type="submit" class="btn btn-primary">Add Invoice</button>
+        </form>
+
+    </div>
+    
+        @{
+            int? invoiceId = 0;
+            int? termsId = 0;
+        }
+        @{
+            if (Model.Invoice != null)
+            {
+                invoiceId = Model.Invoice.InvoiceId;
+
+                if (invoiceId != 0)
+                {
+                    <h6 class="GrayedOut"><b>Terms : @Model.Invoice.PaymentTerms.DueDays days</b></h6>
+                    <br />
+                    <br />
+                    termsId = @Model.Invoice.PaymentTerms.PaymentTermsId;
+                    <div class="rightTopAlphabeticalGroup">
+
+                        <h6><b>Line items for invoice #@invoiceId</b></h6>
+                        <table class="table table-bordered table-striped invoiceBorder">
+                            <thead>
+                                <tr>
+                                    <th><b>Description</b></th>
+                                    <th><b>Amount</b></th>
+                                </tr>
+                            </thead>
+
+                            @foreach (var invoiceLineItem in Model.InvoiceItems)
+                            {
+                                <tbody>
+                                    <tr>
+                                        <td>@invoiceLineItem.Description</td>
+                                        <td>@invoiceLineItem.Amount</td>
+                                    </tr>
+                                </tbody>
+                            }
+                        </table>
+                        <div class="form-group">
+                            @{
+                                double? totalAmount = 0;
+                            }
+                            @foreach (var invoiceLineItem in Model.InvoiceItems)
+                            {
+                                totalAmount += invoiceLineItem.Amount;
+                            }
+                            <p><b>Total : $@totalAmount</b></p>
+
+                        </div>
+
+
+                        <form asp-controller="Invoice" asp-action="InvoiceLineItemAdd" asp-route-vendorId="@Model.CurrentVendor.VendorId" asp-route-invoiceId="@invoiceId" asp-route-paymentTermsId="@termsId" method="post" enctype="application/x-www-form-urlencoded">
+                            <div class="form-group">
+                                <label asp-for="InvoiceLineItem.Description"><b>Description:</b></label>
+                                <input type="text" asp-for="InvoiceLineItem.Description" class="invoiceBorder" id="txtDescription" />
+                            </div>
+                            <br >
+                            <div class="form-group">
+                                <label asp-for="InvoiceLineItem.Amount"><b>Amount:</b></label>
+                                <input type="number" asp-for="InvoiceLineItem.Amount" class="invoiceBorder" id="txtAmount" />
+                            </div>
+
+                            <input type="hidden" asp-for="InvoiceLineItem.InvoiceId" value="@invoiceId" />
+                            <input type="hidden" asp-for="Vendor.VendorId" value="@Model.CurrentVendor.VendorId" />
+                            <br />
+                            <button type="submit" class="btn btn-primary">Add line item</button>
+                        </form>
+                    </div>
+                }
+            }
+
+        }
+    </div>
+</div>

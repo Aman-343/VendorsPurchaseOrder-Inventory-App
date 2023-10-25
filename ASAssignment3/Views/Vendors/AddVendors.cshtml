@@ -1,0 +1,65 @@
+﻿@model VendorViewModel
+@{
+    ViewData["Title"] = "Add Vendors";
+}
+
+<form id="Vendors" asp-controller="Vendors" asp-action="AddVendors" method="post" enctype="application/x-www-form-urlencoded">
+    <h3>Add a vendor</h3>
+    <br />
+
+    <div class="text-danger" asp-validation-summary="All"></div>
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.Name">Name : </label>
+        <input type="text" asp-for="CurrentVendor.Name" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.Address1">Address1 : </label>
+        <input type="text" asp-for="CurrentVendor.Address1" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.Address2">Address2 : </label>
+        <input type="text" asp-for="CurrentVendor.Address2" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.City">City : </label>
+        <input type="text" asp-for="CurrentVendor.City" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.ProvinceOrState">Province/State : </label>
+        <input type="text" asp-for="CurrentVendor.ProvinceOrState" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.ZipOrPostalCode">Zip/postal code : </label>
+        <input type="text" asp-for="CurrentVendor.ZipOrPostalCode" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.VendorPhone">Phone : </label>
+        <input type="text" asp-for="CurrentVendor.VendorPhone" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.VendorContactFirstName">Contact first name : </label>
+        <input type="text" asp-for="CurrentVendor.VendorContactFirstName" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.VendorContactLastName">Contact last name : </label>
+        <input type="text" asp-for="CurrentVendor.VendorContactLastName" />
+    </div><br />
+
+    <div class="form-group">
+        <label asp-for="CurrentVendor.VendorContactEmail">Contact email : </label>
+        <input type="text" asp-for="CurrentVendor.VendorContactEmail" />
+    </div><br />
+
+    <button type="submit" class="btn btn-primary button">Add</button>
+    <a asp-controller="Vendors" asp-action="Vendor" class="btn btn-primary button">Cancel</a>
+</form>
+

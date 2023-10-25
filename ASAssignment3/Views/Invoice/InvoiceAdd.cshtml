@@ -1,0 +1,14 @@
+﻿@model VendorViewModel
+
+<form asp-controller="Invoice" asp-action="InvoiceAdd" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="form-group">
+        <label>Date : </label>
+        <input type="date" class="form-control invoice1Width" />
+    </div>
+
+    <div class="form-group">
+        <label>Terms</label>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Add Invoice</button>
+</form>
